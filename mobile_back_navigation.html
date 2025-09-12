@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RN GAMING</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Home Page Styles */
+        .home-container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .logo-section {
+            margin-bottom: 3rem;
+        }
+
+        .logo-section h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
+        }
+
+        .main-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .main-button {
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .main-button:hover:before {
+            left: 100%;
+        }
+
+        .main-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .movies-button {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .redeem-button {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+        }
+
+        /* Movies List Page */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #4ecdc4;
+        }
+
+        .movie-card p {
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Redeem Code Styles */
+        .redeem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .redeem-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .redeem-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 193, 7, 0.3);
+        }
+
+        .redeem-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffd93d, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Original countdown and process styles */
+        .countdown-container {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .countdown-text {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .scroll-message {
+            display: none;
+            font-size: 1.3rem;
+            margin: 2rem 0;
+            padding: 1rem 2rem;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 10px;
+            border: 1px solid #4caf50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .scroll-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ad-section {
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .ad-placeholder {
+            font-size: 1.5rem;
+            color: #ffeb3b;
+            margin-bottom: 1rem;
+        }
+
+        .ad-content {
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .navigation-section {
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+
+        .navigation-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .redeem-code-display {
+            display: inline-block;
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 2rem;
+            border: 3px solid #ffd93d;
+            animation: codeGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes codeGlow {
+            from { box-shadow: 0 0 20px rgba(255, 211, 61, 0.5); }
+            to { box-shadow: 0 0 30px rgba(255, 211, 61, 0.8); }
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            left: 50%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .logo-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .countdown {
+                font-size: 3rem;
+            }
+            
+            .main-button {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+            
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .redeem-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
+    <!-- Back Button -->
+    <button class="back-button" id="backBtn" onclick="goBack()" style="display: none;">← Home</button>
+
+    <!-- Home Page -->
+    <div class="page active" id="homePage">
+        <div class="home-container">
+            <div class="logo-section">
+                <h1>RN GAMING</h1>
+                <p>Your Ultimate Gaming & Entertainment Hub</p>
+            </div>
+            
+            <div class="main-buttons">
+                <button class="main-button movies-button" onclick="showMovies()">
+                    🎬 MOVIES
+                </button>
+                
+                <div class="ad-section">
+                    <div class="ad-placeholder">📢 Advertisement</div>
+                    <div class="ad-content">
+                        <h3>Featured Advertisement</h3>
+                        <p>This is your advertisement space on the home page. You can place any promotional content here.</p>
+                    </div>
+                </div>
+                
+                <button class="main-button redeem-button" onclick="showRedeemCodes()">
+                    🎁 GOOGLE REDEEM CODES
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movies List Page -->
+    <div class="page" id="moviesPage">
+        <div class="container">
+            <div class="header">
+                <h1>🎬 Movies Collection</h1>
+                <p>Download your favorite movies</p>
+            </div>
+            
+            <div class="movies-grid">
+                <div class="movie-card">
+                    <h3>Action Movies</h3>
+                    <p>Latest action-packed movies collection</p>
+                    <button class="download-btn" onclick="startDownloadProcess()">Download</button>
+                </div>
+                <div class="movie-card">
+                    <h3>Comedy Movies</h3>
+                    <p>Best comedy movies to make you laugh</p>
+                    <button class="download-btn" onclick="startDownloadProcess()">Download</button>
+                </div>
+                <div class="movie-card">
+                    <h3>Drama Movies</h3>
+                    <p>Emotional and heart-touching dramas</p>
+                    <button class="download-btn" onclick="startDownloadProcess()">Download</button>
+                </div>
+                <div class="movie-card">
+                    <h3>Horror Movies</h3>
+                    <p>Spine-chilling horror movie collection</p>
+                    <button class="download-btn" onclick="startDownloadProcess()">Download</button>
+                </div>
+                <div class="movie-card">
+                    <h3>Sci-Fi Movies</h3>
+                    <p>Future and space adventure movies</p>
+                    <button class="download-btn" onclick="startDownloadProcess()">Download</button>
+                </div>
+                <div class="movie-card">
+                    <h3>Animated Movies</h3>
+                    <p>Family-friendly animated features</p>
+                    <button class="download-btn" onclick="startDownloadProcess()">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redeem Codes Page -->
+    <div class="page" id="redeemPage">
+        <div class="container">
+            <div class="header">
+                <h1>🎁 Google Redeem Codes</h1>
+                <p>Daily redeem codes - Click on any number to get code</p>
+            </div>
+            
+            <div class="redeem-grid">
+                <div class="redeem-card" onclick="startRedeemProcess()">
+                    <div class="redeem-number">1</div>
+                    <p>Click to get today's code</p>
+                </div>
+                <div class="redeem-card" onclick="startRedeemProcess()">
+                    <div class="redeem-number">2</div>
+                    <p>Click to get today's code</p>
+                </div>
+                <div class="redeem-card" onclick="startRedeemProcess()">
+                    <div class="redeem-number">3</div>
+                    <p>Click to get today's code</p>
+                </div>
+                <div class="redeem-card" onclick="startRedeemProcess()">
+                    <div class="redeem-number">4</div>
+                    <p>Click to get today's code</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Process Page 1 (Download/Redeem) -->
+    <div class="page" id="processPage1">
+        <div class="container">
+            <div class="header">
+                <h1 id="processTitle1">Processing Request</h1>
+                <p>Please wait while we prepare your content</p>
+            </div>
+            
+            <div class="countdown-container">
+                <div class="loading-spinner"></div>
+                <div class="countdown" id="countdown1">10</div>
+                <div class="countdown-text">Seconds remaining...</div>
+            </div>
+            
+            <div class="scroll-message" id="scrollMessage1">
+                ⬇️ Scroll Down for Next Step ⬇️
+            </div>
+            
+            <div class="ad-section">
+                <div class="ad-placeholder">📢 Advertisement</div>
+                <div class="ad-content">
+                    <h3>Sample Advertisement Space</h3>
+                    <p>This is where your advertisement content will be displayed. You can replace this with actual ads, banners, or promotional content.</p>
+                </div>
+            </div>
+            
+            <div class="navigation-section" id="navSection1">
+                <button class="nav-button" onclick="showProcessPage(2)">Continue to Next Step →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Process Page 2 -->
+    <div class="page" id="processPage2">
+        <div class="container">
+            <div class="header">
+                <h1>Step 2 - Verification</h1>
+                <p>Almost there! One more step to go</p>
+            </div>
+            
+            <div class="countdown-container">
+                <div class="loading-spinner"></div>
+                <div class="countdown" id="countdown2">10</div>
+                <div class="countdown-text">Processing your request...</div>
+            </div>
+            
+            <div class="scroll-message" id="scrollMessage2">
+                ⬇️ Scroll Down for Next Step ⬇️
+            </div>
+            
+            <div class="ad-section">
+                <div class="ad-placeholder">📢 Advertisement</div>
+                <div class="ad-content">
+                    <h3>Another Advertisement Space</h3>
+                    <p>This is another advertisement section. You can customize this with your preferred ad network or promotional content.</p>
+                </div>
+            </div>
+            
+            <div class="navigation-section" id="navSection2">
+                <button class="nav-button" onclick="showProcessPage(3)">Proceed to Final Step →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Process Page 3 (Final) -->
+    <div class="page" id="processPage3">
+        <div class="container">
+            <div class="header">
+                <h1 id="finalTitle">Final Step</h1>
+                <p id="finalDescription">Your content is ready!</p>
+            </div>
+            
+            <div class="countdown-container">
+                <div class="loading-spinner"></div>
+                <div class="countdown" id="countdown3">10</div>
+                <div class="countdown-text">Preparing final result...</div>
+            </div>
+            
+            <div class="scroll-message" id="scrollMessage3">
+                ⬇️ Scroll Down for Result ⬇️
+            </div>
+            
+            <div class="ad-section">
+                <div class="ad-placeholder">📢 Final Advertisement</div>
+                <div class="ad-content">
+                    <h3>Last Advertisement Space</h3>
+                    <p>This is the final advertisement section. Perfect spot for high-converting ads!</p>
+                </div>
+            </div>
+            
+            <div class="navigation-section" id="navSection3">
+                <div id="finalResult">
+                    <!-- This will be populated based on download or redeem -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProcess = 'none'; // 'download' or 'redeem'
+        let navigationStack = ['homePage']; // Track navigation history
+        let currentPage = 'homePage';
+
+        // Initialize the page with proper history state
+        window.addEventListener('load', function() {
+            // Set initial state
+            history.replaceState({page: 'homePage'}, '', window.location.href);
+        });
+
+        // Handle browser back button
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page) {
+                // Navigate to the page in history
+                navigateToPage(event.state.page, false); // false = don't push to history
+            } else {
+                // If no state, go to home
+                navigateToPage('homePage', false);
+            }
+        });
+
+        // Main navigation function
+        function navigateToPage(pageId, addToHistory = true) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update current page
+            currentPage = pageId;
+            
+            // Show/hide back button
+            if (pageId === 'homePage') {
+                document.getElementById('backBtn').style.display = 'none';
+            } else {
+                document.getElementById('backBtn').style.display = 'block';
+            }
+            
+            // Add to browser history if requested
+            if (addToHistory) {
+                history.pushState({page: pageId}, '', window.location.href);
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Update all navigation functions to use the new system
+        function goBack() {
+            history.back();
+        }
+
+        function showMovies() {
+            navigateToPage('moviesPage');
+        }
+
+        function showRedeemCodes() {
+            navigateToPage('redeemPage');
+        }
+
+        function startDownloadProcess() {
+            currentProcess = 'download';
+            document.getElementById('processTitle1').textContent = 'Download Portal';
+            navigateToPage('processPage1');
+            startCountdown(1);
+        }
+
+        function startRedeemProcess() {
+            currentProcess = 'redeem';
+            document.getElementById('processTitle1').textContent = 'Redeem Code Generator';
+            navigateToPage('processPage1');
+            startCountdown(1);
+        }
+
+        function showProcessPage(pageNumber) {
+            navigateToPage(`processPage${pageNumber}`);
+            
+            if (pageNumber === 3) {
+                // Set up final page based on process type
+                if (currentProcess === 'download') {
+                    document.getElementById('finalTitle').textContent = 'Download Ready';
+                    document.getElementById('finalDescription').textContent = 'Your download link is ready!';
+                    document.getElementById('finalResult').innerHTML = `
+                        <a href="GOOGLE_DRIVE_LINK_HERE" class="redeem-code-display" target="_blank">
+                            🔥 Download Now from Google Drive
+                        </a>
+                        <p style="margin-top: 1rem; opacity: 0.8;">
+                            Click the button above to access your Google Drive download
+                        </p>
+                    `;
+                } else if (currentProcess === 'redeem') {
+                    document.getElementById('finalTitle').textContent = 'Redeem Code Ready';
+                    document.getElementById('finalDescription').textContent = 'Your Google redeem code is here!';
+                    document.getElementById('finalResult').innerHTML = `
+                        <div class="redeem-code-display">
+                            🎁 REDEEM-CODE-${Math.random().toString(36).substr(2, 8).toUpperCase()}
+                        </div>
+                        <p style="margin-top: 1rem; opacity: 0.8;">
+                            Copy the code above and redeem it on Google Play Store
+                        </p>
+                        <button class="nav-button" onclick="copyCode()" style="margin-top: 1rem;">
+                            📋 Copy Code
+                        </button>
+                    `;
+                }
+            }
+            
+            startCountdown(pageNumber);
+        }
+
+        function copyCode() {
+            const codeElement = document.querySelector('.redeem-code-display');
+            const code = codeElement.textContent.replace('🎁 ', '');
+            navigator.clipboard.writeText(code).then(function() {
+                alert('Redeem code copied to clipboard!');
+            });
+        }
+
+        function startCountdown(pageNumber) {
+            let timeLeft = 10;
+            const countdownElement = document.getElementById(`countdown${pageNumber}`);
+            const scrollMessage = document.getElementById(`scrollMessage${pageNumber}`);
+            const navSection = document.getElementById(`navSection${pageNumber}`);
+            
+            // Reset visibility
+            scrollMessage.classList.remove('show');
+            navSection.classList.remove('visible');
+            
+            const timer = setInterval(function() {
+                countdownElement.textContent = timeLeft;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    countdownElement.textContent = "✅";
+                    scrollMessage.classList.add('show');
+                    
+                    // Show navigation after a short delay
+                    setTimeout(() => {
+                        navSection.classList.add('visible');
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        // Prevent default back behavior on mobile when there's no more history
+        let isBackHandled = false;
+        window.addEventListener('beforeunload', function(e) {
+            if (currentPage !== 'homePage') {
+                // Allow back navigation within the app
+                return;
+            }
+        });
+
+        // Smooth scrolling
+        document.addEventListener('DOMContentLoaded', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                html {
+                    scroll-behavior: smooth;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
